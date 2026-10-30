@@ -25,7 +25,7 @@ There is no backend. Do not add PHP, WP REST, or a server-only form plugin.
 ```
 index.html                 Vite HTML shell + SPA redirect script
 src/index.tsx              Bootstrap CSS, site CSS, React mount
-src/App.tsx                Router + lazy page imports + HelmetProvider
+src/App.tsx                Router + eager page imports + HelmetProvider
 src/nav.ts                 Shared header/footer links
 src/site.css               Mesmerize-like theme (hero, gray pages, logos)
 src/components/Layout.tsx  Header + <Outlet /> + Footer
@@ -46,7 +46,7 @@ Home uses a full-viewport slideshow hero. Other pages use `PageHero` (solar-roof
 | `/nos-conseils` | `Conseils.tsx` | Bootstrap accordion (AIDES, ACCOMPAGNEMENT, CONSEILS, ANALYSES, SATISFACTION) |
 | `/carport` | `Carport.tsx` | Three photos in `public/images/carport/` |
 | `/nos-partenaires` | `Partenaires.tsx` | Logo grids: PV, batteries, PAC, EV chargers |
-| `/contact` | `Contact.tsx` | `mailto:relation@planet-enr.fr` after client-side email match + consent |
+| `/contact` | `Contact.tsx` | POST JSON to FormSubmit (`https://formsubmit.co/ajax/relation@planet-enr.fr`). FormSubmit activates **per origin**: localhost and `laurentgros.github.io` each need their own « Activate Form » click in `relation@planet-enr.fr`. Treat JSON `success: "false"` as failure (HTTP is still 200). |
 | `/mentions-legales` | `Mentions.tsx` | Legal text from the WP page |
 
 Phones: `06 88 60 25 24`, `06 65 77 50 75`. Email: `relation@planet-enr.fr`.

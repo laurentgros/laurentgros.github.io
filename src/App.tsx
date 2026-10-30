@@ -2,13 +2,12 @@ import React from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Layout from "./components/Layout";
-
-const HomePage = React.lazy(() => import("./pages/Home"));
-const ConseilsPage = React.lazy(() => import("./pages/Conseils"));
-const CarportPage = React.lazy(() => import("./pages/Carport"));
-const PartenairesPage = React.lazy(() => import("./pages/Partenaires"));
-const ContactPage = React.lazy(() => import("./pages/Contact"));
-const MentionsPage = React.lazy(() => import("./pages/Mentions"));
+import CarportPage from "./pages/Carport";
+import ConseilsPage from "./pages/Conseils";
+import ContactPage from "./pages/Contact";
+import HomePage from "./pages/Home";
+import MentionsPage from "./pages/Mentions";
+import PartenairesPage from "./pages/Partenaires";
 
 const router = createBrowserRouter([
   {
@@ -28,9 +27,7 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   return (
     <HelmetProvider>
-      <React.Suspense fallback={null}>
-        <RouterProvider router={router} />
-      </React.Suspense>
+      <RouterProvider router={router} />
     </HelmetProvider>
   );
 };

@@ -2,37 +2,89 @@ import React, { FormEvent, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import PageHero from "../components/PageHero";
 
+const CONTACT_EMAIL = "relation@planet-enr.fr";
+const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
+
 const Contact: React.FC = () => {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle"
+  );
   const [error, setError] = useState("");
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
     const email = String(data.get("email") || "");
     const email2 = String(data.get("email2") || "");
     if (email !== email2) {
+      setStatus("error");
       setError("Les adresses e-mail ne correspondent pas.");
       return;
     }
+    if (String(data.get("company") || "")) {
+      setStatus("sent");
+      setError("");
+      form.reset();
+      return;
+    }
+
     const firstName = String(data.get("firstName") || "");
     const lastName = String(data.get("lastName") || "");
     const phone = String(data.get("phone") || "");
     const subject = String(data.get("subject") || "");
     const message = String(data.get("message") || "");
-    const body = [
-      `Nom : ${firstName} ${lastName}`,
-      `Email : ${email}`,
-      `Téléphone : ${phone}`,
-      "",
-      message,
-    ].join("\n");
-    window.location.href = `mailto:relation@planet-enr.fr?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
+
+    setStatus("sending");
     setError("");
-    setSent(true);
+
+    try {
+      const response = await fetch(FORMSUBMIT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: `${firstName} ${lastName}`,
+          email,
+          phone,
+          _subject: `PLANET'EnR — ${subject}`,
+          _replyto: email,
+          _template: "table",
+          _captcha: "false",
+          message,
+        }),
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        success?: boolean | string;
+        message?: string;
+      };
+      const succeeded =
+        response.ok &&
+        payload.success !== false &&
+        payload.success !== "false";
+      if (!succeeded) {
+        const activation =
+          typeof payload.message === "string" &&
+          payload.message.toLowerCase().includes("activation");
+        throw new Error(
+          activation
+            ? `FormSubmit doit activer le domaine GitHub Pages. Ouvrez ${CONTACT_EMAIL}, cliquez le lien « Activate Form », puis renvoyez ce message.`
+            : payload.message || `HTTP ${response.status}`
+        );
+      }
+      setStatus("sent");
+      form.reset();
+    } catch (cause) {
+      setStatus("error");
+      const detail = cause instanceof Error ? cause.message : "";
+      setError(
+        detail.includes("Activate Form")
+          ? detail
+          : `L'envoi a échoué. Écrivez-nous directement à ${CONTACT_EMAIL}.`
+      );
+    }
   };
 
   return (
@@ -43,7 +95,7 @@ const Contact: React.FC = () => {
       <PageHero title="Contact" />
       <section className="page-body">
         <div className="page-wrap contact-grid">
-          <form className="contact-form" onSubmit={onSubmit}>
+          <form className="contact-form" onSubmit={(event) => void onSubmit(event)}>
             <p>Vos informations personnelles *</p>
             <div className="row">
               <div className="col-md-6">
@@ -84,6 +136,12 @@ const Contact: React.FC = () => {
                 />
               </div>
             </div>
+            <div className="contact-honeypot" aria-hidden="true">
+              <label>
+                Company
+                <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+              </label>
+            </div>
             <label className="form-label">Téléphone *</label>
             <input className="form-control" name="phone" required />
             <label className="form-label">Sujet *</label>
@@ -103,15 +161,15 @@ const Contact: React.FC = () => {
                 afin qu'il puisse répondre à ma demande.
               </label>
             </div>
-            {error && <p>{error}</p>}
-            {sent && (
+            {status === "error" && error && <p>{error}</p>}
+            {status === "sent" && (
               <p>
-                Votre logiciel de messagerie va s'ouvrir pour envoyer le message
-                à relation@planet-enr.fr.
+                Merci, votre message a bien été envoyé à {CONTACT_EMAIL}. Nous
+                vous répondrons rapidement.
               </p>
             )}
-            <button className="btn-planet" type="submit">
-              Envoyer
+            <button className="btn-planet" type="submit" disabled={status === "sending"}>
+              {status === "sending" ? "Envoi…" : "Envoyer"}
             </button>
           </form>
           <aside className="contact-side">
@@ -130,7 +188,7 @@ const Contact: React.FC = () => {
             </div>
             <div className="contact-line">
               <img src="/images/icons/email.png" alt="" />
-              <a href="mailto:relation@planet-enr.fr">relation@planet-enr.fr</a>
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             </div>
           </aside>
         </div>

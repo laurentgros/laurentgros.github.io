@@ -6,6 +6,11 @@ import "./index.css";
 import "./site.css";
 import reportWebVitals from "./reportWebVitals";
 
+window.addEventListener("vite:preloadError", (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root")!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
 root.render(
   <React.StrictMode>

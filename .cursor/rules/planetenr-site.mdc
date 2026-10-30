@@ -9,7 +9,7 @@ Static React clone of planet-enr.fr (not WordPress). Full map: `AGENTS.md`.
 
 - Stack: Node 24, React 18, Vite 7 (`build/` outDir, port 3000), TypeScript, Bootstrap 5 + react-bootstrap, react-router-dom 6, react-helmet-async, gh-pages.
 - Keep WordPress slugs: `/`, `/nos-conseils`, `/carport`, `/nos-partenaires`, `/contact`, `/mentions-legales`.
-- Shared chrome: `src/components/Layout.tsx` + `src/nav.ts`. Pages live in `src/pages/`. Theme in `src/site.css`. Assets in `public/images/`.
-- Contact is `mailto:relation@planet-enr.fr` (GitHub Pages has no WPForms). Validate matching emails client-side.
+- Shared chrome: `src/components/Layout.tsx` + `src/nav.ts`. Pages live in `src/pages/` and are imported eagerly in `App.tsx` (no React.lazy) so GitHub Pages deploys do not 404 old hashed chunks. `index.tsx` reloads on `vite:preloadError`. Theme in `src/site.css`. Assets in `public/images/`.
+- Contact POSTs to FormSubmit (`formsubmit.co/ajax/relation@planet-enr.fr`). Activate **each origin** (localhost vs github.io) via the inbox link. Check JSON `success`, not only HTTP status.
 - SPA on GitHub Pages: keep `index.html` + `public/404.html` rafgraph redirect (`pathSegmentsToKeep = 0`).
 - No PHP, no new backend, no force-push. Commit/deploy only when asked.
