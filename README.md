@@ -14,4 +14,6 @@ Génère le site de production dans le dossier `build`.
 
 ### `npm run deploy`
 
-Construit le site et publie le dossier `build` sur la branche `gh-pages`.
+Construit le site et publie le dossier `build` sur la branche `gh-pages` (déploiement local).
+
+Le déploiement recommandé est GitHub Actions (`.github/workflows/pages.yml`) : un push sur `main` construit Vite et publie Pages. Dans le dépôt : **Settings → Pages → Source = GitHub Actions**.

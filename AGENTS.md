@@ -14,7 +14,7 @@ Match [creeperdeking/creeperdeking.github.io](https://github.com/creeperdeking/c
 | CSS / widgets | Bootstrap 5 + `react-bootstrap` 2.8 |
 | Routing | `react-router-dom` 6 `createBrowserRouter` |
 | Head tags | `react-helmet-async` |
-| Deploy | `gh-pages` → branch `gh-pages` (`npm run deploy`) |
+| Deploy | GitHub Actions `.github/workflows/pages.yml` on `main` (preferred). Fallback: `npm run deploy` → `gh-pages` branch. |
 
 GitHub Pages SPA fallback: `index.html` (query-string restore) + `public/404.html` (rafgraph spa-github-pages). `pathSegmentsToKeep` is `0` because this is a user site (`laurentgros.github.io`), not a project pages path.
 

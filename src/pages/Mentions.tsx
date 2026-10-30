@@ -34,8 +34,8 @@ const Mentions: React.FC = () => {
             <strong>Responsable de la publication :</strong> PLANET'EnR
           </p>
           <p>
-            <strong>HEBERGEUR :</strong> OVH SAS – 2 rue Kellermann – BP 80157
-            59053 ROUBAIX
+            <strong>HEBERGEUR :</strong> GitHub Pages – GitHub, Inc., 88 Colin P. Kelly Jr. Street, San
+            Francisco, CA 94107, États-Unis
           </p>
           <p>
             <strong>WEBMASTER :</strong> PLANET'EnR
