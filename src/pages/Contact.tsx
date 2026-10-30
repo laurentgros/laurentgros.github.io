@@ -5,38 +5,95 @@ import PageHero from "../components/PageHero";
 const CONTACT_EMAIL = "relation@planet-enr.fr";
 const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
 
+const REQUIRED = "Ce champ est obligatoire.";
+const INVALID_EMAIL = "Veuillez saisir une adresse e-mail valide.";
+const EMAIL_MISMATCH = "Les adresses e-mail ne correspondent pas.";
+
+type FieldName =
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "email2"
+  | "phone"
+  | "subject"
+  | "message"
+  | "consent";
+
+type FieldErrors = Partial<Record<FieldName, string>>;
+
+const emailOk = (value: string): boolean =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
 const Contact: React.FC = () => {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+  const clearField = (name: FieldName) => {
+    setFieldErrors((current) => {
+      if (!current[name]) return current;
+      const next = { ...current };
+      delete next[name];
+      return next;
+    });
+  };
+
+  const validate = (data: FormData): FieldErrors => {
+    const firstName = String(data.get("firstName") || "").trim();
+    const lastName = String(data.get("lastName") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const email2 = String(data.get("email2") || "").trim();
+    const phone = String(data.get("phone") || "").trim();
+    const subject = String(data.get("subject") || "").trim();
+    const message = String(data.get("message") || "").trim();
+    const consent = data.get("consent") === "on";
+    const next: FieldErrors = {};
+
+    if (!firstName) next.firstName = REQUIRED;
+    if (!lastName) next.lastName = REQUIRED;
+    if (!email) next.email = REQUIRED;
+    else if (!emailOk(email)) next.email = INVALID_EMAIL;
+    if (!email2) next.email2 = REQUIRED;
+    else if (!emailOk(email2)) next.email2 = INVALID_EMAIL;
+    else if (email && email !== email2) next.email2 = EMAIL_MISMATCH;
+    if (!phone) next.phone = REQUIRED;
+    if (!subject) next.subject = REQUIRED;
+    if (!message) next.message = REQUIRED;
+    if (!consent) next.consent = REQUIRED;
+    return next;
+  };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const email = String(data.get("email") || "");
-    const email2 = String(data.get("email2") || "");
-    if (email !== email2) {
-      setStatus("error");
-      setError("Les adresses e-mail ne correspondent pas.");
+    const nextErrors = validate(data);
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      setStatus("idle");
+      setError("");
       return;
     }
     if (String(data.get("company") || "")) {
       setStatus("sent");
       setError("");
+      setFieldErrors({});
       form.reset();
       return;
     }
 
     const firstName = String(data.get("firstName") || "");
     const lastName = String(data.get("lastName") || "");
+    const email = String(data.get("email") || "");
     const phone = String(data.get("phone") || "");
     const subject = String(data.get("subject") || "");
     const message = String(data.get("message") || "");
 
     setStatus("sending");
     setError("");
+    setFieldErrors({});
 
     try {
       const response = await fetch(FORMSUBMIT_URL, {
@@ -87,6 +144,9 @@ const Contact: React.FC = () => {
     }
   };
 
+  const invalid = (name: FieldName): string =>
+    fieldErrors[name] ? "form-control is-invalid" : "form-control";
+
   return (
     <>
       <Helmet>
@@ -95,45 +155,65 @@ const Contact: React.FC = () => {
       <PageHero title="Contact" />
       <section className="page-body">
         <div className="page-wrap contact-grid">
-          <form className="contact-form" onSubmit={(event) => void onSubmit(event)}>
+          <form
+            className="contact-form"
+            noValidate
+            onSubmit={(event) => void onSubmit(event)}
+          >
             <p>Vos informations personnelles *</p>
             <div className="row">
               <div className="col-md-6">
                 <input
-                  className="form-control"
+                  className={invalid("firstName")}
                   name="firstName"
                   placeholder="Prénom"
-                  required
+                  aria-invalid={Boolean(fieldErrors.firstName)}
+                  onChange={() => clearField("firstName")}
                 />
+                {fieldErrors.firstName && (
+                  <p className="contact-field-error">{fieldErrors.firstName}</p>
+                )}
               </div>
               <div className="col-md-6">
                 <input
-                  className="form-control"
+                  className={invalid("lastName")}
                   name="lastName"
                   placeholder="Nom"
-                  required
+                  aria-invalid={Boolean(fieldErrors.lastName)}
+                  onChange={() => clearField("lastName")}
                 />
+                {fieldErrors.lastName && (
+                  <p className="contact-field-error">{fieldErrors.lastName}</p>
+                )}
               </div>
             </div>
             <p>Email *</p>
             <div className="row">
               <div className="col-md-6">
                 <input
-                  className="form-control"
+                  className={invalid("email")}
                   type="email"
                   name="email"
                   placeholder="E-mail"
-                  required
+                  aria-invalid={Boolean(fieldErrors.email)}
+                  onChange={() => clearField("email")}
                 />
+                {fieldErrors.email && (
+                  <p className="contact-field-error">{fieldErrors.email}</p>
+                )}
               </div>
               <div className="col-md-6">
                 <input
-                  className="form-control"
+                  className={invalid("email2")}
                   type="email"
                   name="email2"
                   placeholder="Confirmez l'e-mail"
-                  required
+                  aria-invalid={Boolean(fieldErrors.email2)}
+                  onChange={() => clearField("email2")}
                 />
+                {fieldErrors.email2 && (
+                  <p className="contact-field-error">{fieldErrors.email2}</p>
+                )}
               </div>
             </div>
             <div className="contact-honeypot" aria-hidden="true">
@@ -143,23 +223,53 @@ const Contact: React.FC = () => {
               </label>
             </div>
             <label className="form-label">Téléphone *</label>
-            <input className="form-control" name="phone" required />
+            <input
+              className={invalid("phone")}
+              name="phone"
+              aria-invalid={Boolean(fieldErrors.phone)}
+              onChange={() => clearField("phone")}
+            />
+            {fieldErrors.phone && (
+              <p className="contact-field-error">{fieldErrors.phone}</p>
+            )}
             <label className="form-label">Sujet *</label>
-            <input className="form-control" name="subject" required />
+            <input
+              className={invalid("subject")}
+              name="subject"
+              aria-invalid={Boolean(fieldErrors.subject)}
+              onChange={() => clearField("subject")}
+            />
+            {fieldErrors.subject && (
+              <p className="contact-field-error">{fieldErrors.subject}</p>
+            )}
             <label className="form-label">Message *</label>
             <textarea
-              className="form-control"
+              className={invalid("message")}
               name="message"
               rows={6}
               placeholder="Expliquez-nous votre projet."
-              required
+              aria-invalid={Boolean(fieldErrors.message)}
+              onChange={() => clearField("message")}
             />
+            {fieldErrors.message && (
+              <p className="contact-field-error">{fieldErrors.message}</p>
+            )}
             <div className="form-check mb-3">
-              <input className="form-check-input" type="checkbox" id="consent" required />
+              <input
+                className={`form-check-input${fieldErrors.consent ? " is-invalid" : ""}`}
+                type="checkbox"
+                id="consent"
+                name="consent"
+                aria-invalid={Boolean(fieldErrors.consent)}
+                onChange={() => clearField("consent")}
+              />
               <label className="form-check-label" htmlFor="consent">
                 Je consens à ce que PLANET'EnR stocke mes informations envoyées
                 afin qu'il puisse répondre à ma demande.
               </label>
+              {fieldErrors.consent && (
+                <p className="contact-field-error">{fieldErrors.consent}</p>
+              )}
             </div>
             {status === "error" && error && <p>{error}</p>}
             {status === "sent" && (
