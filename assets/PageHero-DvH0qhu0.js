@@ -1,0 +1,1 @@
+import{j as r}from"./index-C0dsAze7.js";const a=({title:e,image:o="/images/hero/solar-roof.jpg"})=>r.jsx("section",{className:"inner-hero",style:{backgroundImage:`url(${o})`},children:r.jsx("h1",{children:e})});export{a as P};
