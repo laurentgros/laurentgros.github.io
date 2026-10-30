@@ -1,0 +1,15 @@
+{
+  "short_name": "PLANET'EnR",
+  "name": "PLANET'EnR – L'énergie durable",
+  "icons": [
+    {
+      "src": "images/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#03a9f4",
+  "background_color": "#ffffff"
+}
