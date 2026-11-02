@@ -76,13 +76,6 @@ const Contact: React.FC = () => {
       setError("");
       return;
     }
-    if (String(data.get("company") || "")) {
-      setStatus("sent");
-      setError("");
-      setFieldErrors({});
-      form.reset();
-      return;
-    }
 
     const firstName = String(data.get("firstName") || "");
     const lastName = String(data.get("lastName") || "");
@@ -215,12 +208,6 @@ const Contact: React.FC = () => {
                   <p className="contact-field-error">{fieldErrors.email2}</p>
                 )}
               </div>
-            </div>
-            <div className="contact-honeypot" aria-hidden="true">
-              <label>
-                Company
-                <input type="text" name="company" tabIndex={-1} autoComplete="off" />
-              </label>
             </div>
             <label className="form-label">Téléphone *</label>
             <input

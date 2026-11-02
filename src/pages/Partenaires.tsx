@@ -28,6 +28,11 @@ const HEAT_PUMPS: Partner[] = [
   { src: "/images/partners/atlantic.jpg", alt: "Atlantic Fujitsu" },
 ];
 
+const CLIMATISATION: Partner[] = [
+  { src: "/images/partners/mitsubishi.png", alt: "Mitsubishi" },
+  { src: "/images/partners/atlantic.jpg", alt: "Atlantic Fujitsu" },
+];
+
 const CHARGERS: Partner[] = [
   { src: "/images/partners/wallbox.jpg", alt: "Wallbox" },
   { src: "/images/partners/tesla.png", alt: "Tesla" },
@@ -64,6 +69,8 @@ const Partenaires: React.FC = () => {
           <LogoGrid items={BATTERIES} />
           <h2>POMPES À CHALEUR AIR-EAU (Remplacement de chaudières à fioul/gaz)</h2>
           <LogoGrid items={HEAT_PUMPS} />
+          <h2>CLIMATISATION RÉVERSIBLE</h2>
+          <LogoGrid items={CLIMATISATION} />
           <h2>BORNES DE RECHARGE POUR VÉHICULES ÉLECTRIQUES ET HYBRIDES</h2>
           <LogoGrid items={CHARGERS} />
         </div>
