@@ -14,19 +14,14 @@ const Carport: React.FC = () => {
           <p>
             Un carport ou une pergola photovoltaïque protège vos voitures ou
             votre terrasse tout en produisant de l’électricité. Les structures
-            de la gamme solaire MaviSun sont en aluminium thermolaquées et
-            assemblées en France par TELCO. Elles s’adressent à la maison
-            comme aux bâtiments tertiaires, et sont prévues pour durer : elles
-            se démontent, se réparent et se recyclent.
+            de la gamme solaire TELCO sont en aluminium thermolaquées et
+            produites en France.
           </p>
           <p>
             Plusieurs formes existent. Les pergolas et carports ELECTRA Design
             2 et Design 3 ont un toit plat, adossés à la façade ou posés en
             îlot. Le Design 3 se décline aussi en ombrière et en version à
-            pieds déportés, pour laisser le passage libre. La gamme Horizon III
-            ajoute une toiture en pente, en pergola adossée ou en carport îlot,
-            y compris à deux pentes. Le nombre de modules se choisit selon la
-            surface : la puissance va d’environ 500 W à plus de 10 kW.
+            pieds déportés, pour laisser le passage libre.
           </p>
           <p>
             La teinte standard est l’anthracite texturé RAL 7016 ; d’autres
@@ -36,8 +31,9 @@ const Carport: React.FC = () => {
             plots béton, en tenant compte de la neige et du vent du lieu.
           </p>
           <p>
-            PLANET'EnR choisit le modèle selon l’usage — abri voiture, terrasse
-            ou ombrière — et selon l’exposition du terrain.
+            PLANET'EnR vous aide à choisir et installe le modèle selon l’usage
+            — abri voiture, terrasse ou ombrière — et selon l’exposition du
+            terrain.
           </p>
           <div className="carport-grid">
             <img
